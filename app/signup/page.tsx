@@ -122,8 +122,8 @@ export default function SignUpPage() {
                     {message && (
                         <div
                             className={`mt-4 p-3 rounded-lg text-center font-semibold ${message.includes("successful")
-                                    ? "bg-green-100 text-green-700 animate-bounce"
-                                    : "bg-red-100 text-red-700"
+                                ? "bg-green-100 text-green-700 animate-bounce"
+                                : "bg-red-100 text-red-700"
                                 }`}
                         >
                             {message}
