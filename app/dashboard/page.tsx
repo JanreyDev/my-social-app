@@ -16,6 +16,14 @@ export default function Dashboard() {
     const [accent, setAccent] = useState("#2563eb");
     const [showThemeOptions, setShowThemeOptions] = useState(false);
 
+    // ✅ Redirect if not logged in
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/login"; // block access if no token
+        }
+    }, []);
+
     // Load saved theme preference
     useEffect(() => {
         const savedTheme = localStorage.getItem("theme");
@@ -40,8 +48,29 @@ export default function Dashboard() {
     };
 
     const handleLogout = async () => {
-        await fetch("/api/logout", { method: "POST" });
-        window.location.href = "/login";
+        const token = localStorage.getItem("token"); // get token saved at login
+
+        if (!token) {
+            console.error("No token found");
+            window.location.href = "/login";
+            return;
+        }
+
+        try {
+            await fetch("http://localhost:8000/api/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // attach token
+                },
+            });
+
+            // Clear token and redirect
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
 
     return (
@@ -64,7 +93,6 @@ export default function Dashboard() {
                         />
                     </div>
                 </div>
-
 
                 {/* Right: Toggle + Profile */}
                 <div className="flex items-center gap-4 relative">

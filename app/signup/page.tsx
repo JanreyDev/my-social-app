@@ -19,6 +19,12 @@ export default function SignUpPage() {
         e.preventDefault();
         try {
             const result = await registerUser(form);
+
+            // ✅ Save the JWT token returned by Laravel
+            if (result.token) {
+                localStorage.setItem("token", result.token);
+            }
+
             setMessage("Registration successful 🎉 Redirecting...");
             console.log("Success:", result);
 
@@ -32,10 +38,15 @@ export default function SignUpPage() {
                 const allMessages = Object.values(errors).flat();
                 setMessage(allMessages.join(" | "));
             } else {
-                setMessage("Registration failed ❌ " + (err.response?.data?.message || err.message));
+                setMessage(
+                    "Registration failed ❌ " +
+                    (err.response?.data?.message || err.message)
+                );
             }
         }
     };
+
+
 
     // ✅ The return for rendering should be here
     return (
